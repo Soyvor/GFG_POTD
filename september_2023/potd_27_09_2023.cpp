@@ -1,85 +1,57 @@
-#include<bits/stdc++.h>
-#include<vector>
-#include<string>
-#include<map>
-#include<math.h>
-#include<set>
+#include <bits/stdc++.h>
 using namespace std;
 #define int long long
-long long  t;
-class Solution
-{
+
+class Solution {
 public:
-    vector<int> printClosest(int arr[], int brr[], int n, int m, int x)
-    {
+    vector<int> printClosest(int arr[], int brr[], int n, int m, int x) {
+        // Sort arrays
         sort(arr, arr + n);
         sort(brr, brr + m);
-        int ans1=arr[0], ans2=arr[0];
-        int diff = INT_MAX;
-        for (int i = 0; i < n; i++)
-        {
-            int tm = x - arr[i];
-            int left = 0, right = m - 1, mid;
-            bool f = 0,f2=0;;
-            while (left <= right)
-            {
-                mid = left + (right - left) / 2;
-                if (brr[mid] == tm)
-                {
-                    ans1 = arr[i];
-                    ans2 = brr[mid];
-                    diff=0;
-                    f2=1;
-                    break;
-                }
-                else if (brr[mid] > tm)
-                {
-                    if (diff > abs(brr[mid] + arr[i] - x))
-                    {
-                        ans1 = arr[i];
-                        ans2 = brr[mid];
-                         diff=abs(brr[mid] + arr[i] - x);
-                    }
-                    right = mid;
-                }
-                else
-                {
-                    if (diff > abs(brr[mid] + arr[i] - x))
-                    {
-                        ans1 = arr[i];
-                        ans2 = brr[mid];
-                        diff=abs(brr[mid] + arr[i] - x);
-                    }
-                    left = mid + 1;
-                }
-                if (f)
-                    break;
-                if (left == right)
-                    f = 1;
+
+        int i = 0, j = m - 1;
+        int diff = LLONG_MAX;
+        int ans1 = -1, ans2 = -1;
+
+        // Two pointer approach
+        while (i < n && j >= 0) {
+            int sum = arr[i] + brr[j];
+            int currDiff = abs(sum - x);
+
+            if (currDiff < diff) {
+                diff = currDiff;
+                ans1 = arr[i];
+                ans2 = brr[j];
             }
-            if(f2)break;
+
+            // Move pointers
+            if (sum > x) {
+                j--;  // need smaller sum
+            } else {
+                i++;  // need bigger sum
+            }
         }
-        vector<int>v;
-        v.push_back(ans1);
-        v.push_back(ans2);
-        // cout<<ans1<<" "<<ans2<<endl;
-        return v;
+
+        return {ans1, ans2};
     }
 };
-void solution()
-{
 
-}
-signed main()
-{
-ios_base::sync_with_stdio(false); 
-cin.tie(NULL);
-cout.tie(NULL);
-cin>>t;
-while(t--)
-{
-solution();
-cout<<endl;
-}
-return 0;
+signed main() {
+    ios_base::sync_with_stdio(false); 
+    cin.tie(NULL);
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int n, m, x;
+        cin >> n >> m >> x;
+        int arr[n], brr[m];
+        for (int i = 0; i < n; i++) cin >> arr[i];
+        for (int i = 0; i < m; i++) cin >> brr[i];
+
+        Solution sol;
+        vector<int> ans = sol.printClosest(arr, brr, n, m, x);
+        cout << ans[0] << " " << ans[1] << "\n";
+    }
+    return 0;
 }
